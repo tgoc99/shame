@@ -1,23 +1,8 @@
-const liveServer = require('live-server');
-const openfinLauncher = require('openfin-launcher');
-const path = require('path');
+const express = require('express')
+const path = require('path')
+const PORT = process.env.PORT || 5000
 
-const configPath = path.resolve('public/app.json');
-const serverParams = {
-    root: path.resolve('public'),
-    port: 5000,
-    open: false,
-    logLevel: 2
-};
-
-//Update our config and launch openfin.
-function launchOpenFin() {
-    openfinLauncher.launchOpenFin({ configPath })
-    .then(() => process.exit())
-    .catch(err => console.log(err));
-}
-
-//Start the server server and launch our app.
-liveServer.start(serverParams).on('listening', () => {
-    launchOpenFin();
-});
+express()
+  .use(express.static(path.join(__dirname, 'public')))
+  .get('/', (req, res) => res.render('index.html'))
+  .listen(PORT, () => console.log(`Listening on ${ PORT }`))
