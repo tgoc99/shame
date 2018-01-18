@@ -9,12 +9,43 @@
 </head>
 <body>
   <div>
-    <h1>Hello, world!</h1>
-    <p>This is a template for an OpenFin application.</p>
-    <p id="version-number-container">
-      Current version: <span id="of-version"></span>
-    </p>
+    <h1>Pull Request SHAME!!!!!!!!</h1>
+    <p id="text"></p>
+    <p style="font-weight:bold" id="shame"></p>
+    <a id="link">Link to PR</a>
   </div>
-  <script src="js/main.js"></script>
+  <!-- <script src="js/main.js"></script> -->
+  <script>
+    let repo = `HadoukenIO/core`;
+
+    fetch(`https://api.github.com/repos/${repo}/pulls`)
+    .then(res=>{
+      return res.json();
+    })
+    .then(data => {
+      console.log(data);
+      let oldestPr = data[data.length-1];
+      let prNumber = oldestPr.number;
+      let prOwner = oldestPr.user.login;
+      let requestedReviewers = oldestPr.requested_reviewers.length ? JSON.stringify(oldestPr.requested_reviewers.map(user => user.login)) : 'NONE!';
+      let reviewCommentsUrl = oldestPr.review_comments_url;
+
+      fetch(oldestPr.review_comments_url)
+      .then(res=>{
+        return res.json();
+      })
+      .then(comments => {
+
+        let lastComment = comments[comments.length-1];
+        let lastCommenter = lastComment.user.login;
+        let blame = requestedReviewers === 'NONE!' ? prOwner : requestedReviewers;
+
+        document.getElementById('text').innerText = `The oldest PR in ${repo} is "${oldestPr.title}" by ${prOwner}; the requested reviewers are ${requestedReviewers} & the last comment was: "${lastComment.body}" by ${lastCommenter}`
+        document.getElementById('shame').innerText = `SHAME!!!!!!!!!`
+
+        document.getElementById('link').href = oldestPr._links.html.href;
+      })
+    })
+  </script>
 </body>
 </html>
