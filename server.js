@@ -5,7 +5,7 @@ const path = require('path');
 const configPath = path.resolve('public/app.json');
 const serverParams = {
     root: path.resolve('public'),
-    port: 5555,
+    port: 5000,
     open: false,
     logLevel: 2
 };
